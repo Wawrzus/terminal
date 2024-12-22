@@ -8,11 +8,46 @@
 #define PATH_SIZE 600
 #define COMMAND_SIZE 100
 #define FILE_NAME 150
+#define READ_FILE_SIZE 300
 
 //writing to file
-void writeToFile()
+void viewFile()
 {
-    
+    char fileName[FILE_NAME];
+    printf("$:filename to view: ");
+    fgets(fileName, FILE_NAME, stdin);
+    for (int i = 0; i < (int)strlen(fileName); i++)
+    {
+        if(fileName[i] == '\n')
+            fileName[i] = '\0'; 
+        else
+            fileName[i] = fileName[i];
+    }
+
+    FILE *file = fopen(fileName, "r");
+    char *fileContent[READ_FILE_SIZE];
+    for(int i = 0; i < READ_FILE_SIZE; i++)
+    {
+        fileContent[i] = malloc(READ_FILE_SIZE * sizeof(char));
+        if(fileContent == NULL)
+            printf("blad alokacji pamieci\n");
+    }
+    int index = 0;
+    if(file != NULL)
+    {
+        while (fgets(fileContent[index], READ_FILE_SIZE, file)){index++;}
+        for(int i = 0; i < (int)(sizeof(fileContent)/sizeof(fileContent[0])); i++)
+        {
+            if(fileContent[i] != NULL)
+                printf("%s", fileContent[i]);
+        }
+    }
+    else
+    {
+        printf("nie mozna otworzyc pliku");
+    }
+    printf("\n");
+    fclose(file);
 }
 
 //creating file
@@ -99,6 +134,7 @@ void help()
     printf("current-dir >> show current path\n");
     printf("change-dir >> change working directory\n");
     printf("crt-file >> create file\n");
+    printf("view-file >> edit file\n");
 }
 
 //check what command user used
@@ -112,7 +148,7 @@ int checkCommand(char *command)
             command[i] = command[i];
     }
     int commandIndex = 0;
-    const char commandArray[][200] = {"exit-terminal", "help", "clear", "list-files", "current-dir", "change-dir", "crt-file"}; 
+    const char *commandArray[] = {"exit-terminal", "help", "clear", "list-files", "current-dir", "change-dir", "crt-file", "view-file"}; 
     for(int i = 0; i < (int)(sizeof(commandArray)/sizeof(commandArray[0])); i++)
     {
         if(strcmp(commandArray[i], command) == 0)
@@ -151,6 +187,9 @@ void mainLoop()
             break;
         case 6:
             createFile();
+            break;
+        case 7:
+            viewFile();
             break;
         default:
             break;
