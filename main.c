@@ -5,8 +5,48 @@
 #include <unistd.h>
 #include <string.h>
 
-#define PATH_SIZE 1024
-#define COMMAND_SIZE 200
+#define PATH_SIZE 600
+#define COMMAND_SIZE 100
+#define FILE_NAME 150
+
+//writing to file
+void writeToFile()
+{
+    
+}
+
+//creating file
+void createFile()
+{
+    char fileName[FILE_NAME];
+    printf("$:filename: ");
+    fgets(fileName, FILE_NAME, stdin);
+    for (int i = 0; i < (int)strlen(fileName); i++)
+    {
+        if(fileName[i] == '\n')
+            fileName[i] = '\0'; 
+        else
+            fileName[i] = fileName[i];
+    }
+
+    FILE *file = fopen(fileName, "r");
+    if(file != NULL)
+    {
+        fclose(file);
+        printf("taki plik juz istnieje\n");
+        return;
+    }
+
+    if(file == NULL)
+    {
+        printf("blad podczas otwierania pliku");
+        return;
+    }
+
+    file = fopen(fileName, "w");
+    fclose(file);
+    printf("plik utworzony pomyslnie\n");
+}
 
 //change working directory
 void changeDirectory()
@@ -58,6 +98,7 @@ void help()
     printf("list-files >> list current directory content\n");
     printf("current-dir >> show current path\n");
     printf("change-dir >> change working directory\n");
+    printf("crt-file >> create file\n");
 }
 
 //check what command user used
@@ -71,7 +112,7 @@ int checkCommand(char *command)
             command[i] = command[i];
     }
     int commandIndex = 0;
-    const char commandArray[][200] = {"exit-terminal", "help", "clear", "list-files", "current-dir", "change-dir"}; 
+    const char commandArray[][200] = {"exit-terminal", "help", "clear", "list-files", "current-dir", "change-dir", "crt-file"}; 
     for(int i = 0; i < (int)(sizeof(commandArray)/sizeof(commandArray[0])); i++)
     {
         if(strcmp(commandArray[i], command) == 0)
@@ -107,6 +148,9 @@ void mainLoop()
             break;
         case 5:
             changeDirectory();
+            break;
+        case 6:
+            createFile();
             break;
         default:
             break;
