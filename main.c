@@ -5,16 +5,20 @@
 #include <unistd.h>
 #include <string.h>
 
+//
 #define PATH_SIZE 600
 #define COMMAND_SIZE 100
-#define FILE_NAME 150
-#define READ_FILE_SIZE 300
 
-//writing to file
-void viewFile()
+//
+#define FILE_NAME 150
+#define LINE_SIZE 200
+#define NUMBER_OF_LINES 300
+
+//read file content
+void readFile()
 {
-    char fileName[FILE_NAME];
-    printf("$:filename to view: ");
+    char *fileName = malloc(FILE_NAME * sizeof(char));
+    printf("$:filename ");
     fgets(fileName, FILE_NAME, stdin);
     for (int i = 0; i < (int)strlen(fileName); i++)
     {
@@ -23,31 +27,20 @@ void viewFile()
         else
             fileName[i] = fileName[i];
     }
-
-    FILE *file = fopen(fileName, "r");
-    char *fileContent[READ_FILE_SIZE];
-    for(int i = 0; i < READ_FILE_SIZE; i++)
-    {
-        fileContent[i] = malloc(READ_FILE_SIZE * sizeof(char));
-        if(fileContent == NULL)
-            printf("blad alokacji pamieci\n");
-    }
-    int index = 0;
+    FILE *file;
+    file = fopen(fileName, "r");
+    char *fileContent[NUMBER_OF_LINES];
+    __uint16_t index = 0;
+    for (__uint16_t i = 0; i < NUMBER_OF_LINES; i++)
+        fileContent[i] = malloc(LINE_SIZE * sizeof(char));
     if(file != NULL)
-    {
-        while (fgets(fileContent[index], READ_FILE_SIZE, file)){index++;}
-        for(int i = 0; i < (int)(sizeof(fileContent)/sizeof(fileContent[0])); i++)
-        {
-            if(fileContent[i] != NULL)
-                printf("%s", fileContent[i]);
-        }
-    }
-    else
-    {
-        printf("nie mozna otworzyc pliku");
-    }
-    printf("\n");
+        while (fgets(fileContent[index], NUMBER_OF_LINES, file))
+            index++;        
+    for (__uint16_t i = 0; i < NUMBER_OF_LINES; i++)
+        if(strcmp(fileContent[i], "") != 0)
+            printf("%d  %s", i, fileContent[i]);
     fclose(file);
+    printf("\n");
 }
 
 //creating file
@@ -134,7 +127,7 @@ void help()
     printf("current-dir >> show current path\n");
     printf("change-dir >> change working directory\n");
     printf("crt-file >> create file\n");
-    printf("view-file >> edit file\n");
+    printf("read-file >> edit file\n");
 }
 
 //check what command user used
@@ -148,7 +141,7 @@ int checkCommand(char *command)
             command[i] = command[i];
     }
     int commandIndex = 0;
-    const char *commandArray[] = {"exit-terminal", "help", "clear", "list-files", "current-dir", "change-dir", "crt-file", "view-file"}; 
+    const char *commandArray[] = {"exit-terminal", "help", "clear", "list-files", "current-dir", "change-dir", "crt-file", "read-file"}; 
     for(int i = 0; i < (int)(sizeof(commandArray)/sizeof(commandArray[0])); i++)
     {
         if(strcmp(commandArray[i], command) == 0)
@@ -189,7 +182,7 @@ void mainLoop()
             createFile();
             break;
         case 7:
-            viewFile();
+            readFile();
             break;
         default:
             break;
