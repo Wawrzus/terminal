@@ -14,6 +14,38 @@
 #define LINE_SIZE 200
 #define NUMBER_OF_LINES 300
 
+//write to file
+void writeToFile()
+{
+    char *fileName = malloc(FILE_NAME * sizeof(char));
+    char *lineContent = malloc(LINE_SIZE * sizeof(char));
+    printf("$:filename ");
+    fgets(fileName, FILE_NAME, stdin);
+    for (int i = 0; i < (int)strlen(fileName); i++)
+    {
+        if(fileName[i] == '\n')
+            fileName[i] = '\0'; 
+        else
+            fileName[i] = fileName[i];
+    }
+    FILE *file;
+    file = fopen(fileName, "r");
+    if(file != NULL)
+    {
+        file = fopen(fileName, "w");
+        printf("$:content ");
+        fgets(lineContent, LINE_SIZE, stdin);
+        fgets(lineContent, LINE_SIZE, file);
+        fprintf(file, lineContent);
+        fclose(file);
+        printf("zapisano\n");
+    }
+    else
+    {
+        printf("takie plik nie istnieje\n");
+    }
+}
+
 //read file content
 void readFile()
 {
@@ -34,13 +66,19 @@ void readFile()
     for (__uint16_t i = 0; i < NUMBER_OF_LINES; i++)
         fileContent[i] = malloc(LINE_SIZE * sizeof(char));
     if(file != NULL)
+    {
         while (fgets(fileContent[index], NUMBER_OF_LINES, file))
-            index++;        
-    for (__uint16_t i = 0; i < NUMBER_OF_LINES; i++)
-        if(strcmp(fileContent[i], "") != 0)
-            printf("%d  %s", i, fileContent[i]);
-    fclose(file);
-    printf("\n");
+            index++;
+        for (__uint16_t i = 0; i < NUMBER_OF_LINES; i++)
+            if(strcmp(fileContent[i], "") != 0)
+                printf("%d  %s", i, fileContent[i]);
+        fclose(file);
+        printf("\n");
+    }
+    else
+    {
+        printf("taki plik nie istnieje\n");
+    } 
 }
 
 //creating file
@@ -62,15 +100,10 @@ void createFile()
     {
         fclose(file);
         printf("taki plik juz istnieje\n");
-        return;
     }
 
     if(file == NULL)
-    {
         printf("blad podczas otwierania pliku");
-        return;
-    }
-
     file = fopen(fileName, "w");
     fclose(file);
     printf("plik utworzony pomyslnie\n");
@@ -127,7 +160,8 @@ void help()
     printf("current-dir >> show current path\n");
     printf("change-dir >> change working directory\n");
     printf("crt-file >> create file\n");
-    printf("read-file >> edit file\n");
+    printf("read-file >> read file\n");
+    printf("wrt-file >> overwrite file\n");
 }
 
 //check what command user used
@@ -141,7 +175,7 @@ int checkCommand(char *command)
             command[i] = command[i];
     }
     int commandIndex = 0;
-    const char *commandArray[] = {"exit-terminal", "help", "clear", "list-files", "current-dir", "change-dir", "crt-file", "read-file"}; 
+    const char *commandArray[] = {"exit-terminal", "help", "clear", "list-files", "current-dir", "change-dir", "crt-file", "read-file", "wrt-file"}; 
     for(int i = 0; i < (int)(sizeof(commandArray)/sizeof(commandArray[0])); i++)
     {
         if(strcmp(commandArray[i], command) == 0)
@@ -183,6 +217,9 @@ void mainLoop()
             break;
         case 7:
             readFile();
+            break;
+        case 8:
+            writeToFile();
             break;
         default:
             break;
