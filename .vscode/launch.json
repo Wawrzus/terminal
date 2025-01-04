@@ -8,8 +8,8 @@
       "args": [],
       "stopAtEntry": false,
       "externalConsole": false,
-      "cwd": "/run/media/wawrzus/Terminal/terminal",
-      "program": "/run/media/wawrzus/Terminal/terminal/build/Debug/outDebug",
+      "cwd": "/run/media/wawrzus/Terminal/terminal/src",
+      "program": "/run/media/wawrzus/Terminal/terminal/src/build/Debug/outDebug",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [

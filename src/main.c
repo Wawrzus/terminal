@@ -4,6 +4,7 @@
 #include <dirent.h>
 #include <unistd.h>
 #include <string.h>
+#include <sys/stat.h>
 
 //
 #define PATH_SIZE 600
@@ -13,6 +14,15 @@
 #define FILE_NAME 150
 #define LINE_SIZE 200
 #define NUMBER_OF_LINES 300
+
+//create directory
+void createDirectory()
+{
+    if(mkdir("nowyFolderLol", 0777) != -1)
+        printf("stworzono nowy folder\n");
+    else
+        printf("wystapil blad przy tworzeniu\n");
+}
 
 //write to file
 void writeToFile()
@@ -162,6 +172,7 @@ void help()
     printf("crt-file >> create file\n");
     printf("read-file >> read file\n");
     printf("wrt-file >> overwrite file\n");
+    printf("crt-dir >> create directory\n");
 }
 
 //check what command user used
@@ -175,7 +186,7 @@ int checkCommand(char *command)
             command[i] = command[i];
     }
     int commandIndex = 0;
-    const char *commandArray[] = {"exit-terminal", "help", "clear", "list-files", "current-dir", "change-dir", "crt-file", "read-file", "wrt-file"}; 
+    const char *commandArray[] = {"exit-terminal", "help", "clear", "list-files", "current-dir", "change-dir", "crt-file", "read-file", "wrt-file", "crt-dir"}; 
     for(int i = 0; i < (int)(sizeof(commandArray)/sizeof(commandArray[0])); i++)
     {
         if(strcmp(commandArray[i], command) == 0)
@@ -220,6 +231,9 @@ void mainLoop()
             break;
         case 8:
             writeToFile();
+            break;
+        case 9:
+            createDirectory();
             break;
         default:
             break;
