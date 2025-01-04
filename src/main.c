@@ -15,13 +15,56 @@
 #define LINE_SIZE 200
 #define NUMBER_OF_LINES 300
 
+//
+#define DIR_NAME 200
+
 //create directory
 void createDirectory()
 {
-    if(mkdir("nowyFolderLol", 0777) != -1)
+    char *dirName = malloc(FILE_NAME * sizeof(char));
+    printf("$:dirname ");
+    fgets(dirName, FILE_NAME, stdin);
+    for (int i = 0; i < (int)strlen(dirName); i++)
+    {
+        if(dirName[i] == '\n')
+            dirName[i] = '\0'; 
+        else
+            dirName[i] = dirName[i];
+    }
+    for (int i = 0; i < (int)strlen(dirName); i++)
+    {
+        if(dirName[i] == ' ')
+            dirName[i] = '_'; 
+        else
+            dirName[i] = dirName[i];
+    }
+    if(mkdir(dirName, 0777) != -1)
         printf("stworzono nowy folder\n");
     else
         printf("wystapil blad przy tworzeniu\n");
+}
+
+//delete file
+void deleteFile()
+{
+    char *fileName = malloc(FILE_NAME * sizeof(char));
+    printf("$:filename ");
+    fgets(fileName, FILE_NAME, stdin);
+    for (int i = 0; i < (int)strlen(fileName); i++)
+    {
+        if(fileName[i] == '\n')
+            fileName[i] = '\0'; 
+        else
+            fileName[i] = fileName[i];
+    }
+    if(remove(fileName) == 0)
+    {
+        printf("plik zostal usuniety\n");
+    }
+    else
+    {
+        printf("plik nie istnieje lub nie da sie go usunac\n");
+    }
 }
 
 //write to file
@@ -46,7 +89,7 @@ void writeToFile()
         printf("$:content ");
         fgets(lineContent, LINE_SIZE, stdin);
         fgets(lineContent, LINE_SIZE, file);
-        fprintf(file, lineContent);
+        fprintf(file, "%s", lineContent);
         fclose(file);
         printf("zapisano\n");
     }
@@ -111,12 +154,12 @@ void createFile()
         fclose(file);
         printf("taki plik juz istnieje\n");
     }
-
-    if(file == NULL)
-        printf("blad podczas otwierania pliku");
-    file = fopen(fileName, "w");
-    fclose(file);
-    printf("plik utworzony pomyslnie\n");
+    else
+    {
+        file = fopen(fileName, "w");
+        fclose(file);
+        printf("plik utworzony pomyslnie\n");
+    }  
 }
 
 //change working directory
@@ -172,6 +215,7 @@ void help()
     printf("crt-file >> create file\n");
     printf("read-file >> read file\n");
     printf("wrt-file >> overwrite file\n");
+    printf("dlt-file >> delete file\n");
     printf("crt-dir >> create directory\n");
 }
 
@@ -186,7 +230,7 @@ int checkCommand(char *command)
             command[i] = command[i];
     }
     int commandIndex = 0;
-    const char *commandArray[] = {"exit-terminal", "help", "clear", "list-files", "current-dir", "change-dir", "crt-file", "read-file", "wrt-file", "crt-dir"}; 
+    const char *commandArray[] = {"exit-terminal", "help", "clear", "list-files", "current-dir", "change-dir", "crt-file", "read-file", "wrt-file", "dlt-file", "crt-dir"}; 
     for(int i = 0; i < (int)(sizeof(commandArray)/sizeof(commandArray[0])); i++)
     {
         if(strcmp(commandArray[i], command) == 0)
@@ -233,6 +277,9 @@ void mainLoop()
             writeToFile();
             break;
         case 9:
+            deleteFile();
+            break;
+        case 10:
             createDirectory();
             break;
         default:
