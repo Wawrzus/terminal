@@ -24,8 +24,33 @@
 #define BLUE "\033[0;34m"
 #define WHITE "\033[0;37m"
 
+//remove directory
+void removeDirectory(void)
+{
+    char *fileName = malloc(FILE_NAME * sizeof(char));
+    printf("$:dirname ");
+    fgets(fileName, FILE_NAME, stdin);
+    for (int i = 0; i < (int)strlen(fileName); i++)
+    {
+        if(fileName[i] == '\n')
+            fileName[i] = '\0'; 
+        else
+            fileName[i] = fileName[i];
+    }
+    if (rmdir(fileName) == 0)
+    {
+        printf("%sfolder has been deleted", GREEN);
+        printf("%s\n", WHITE);
+    }
+    else
+    {
+        printf("%sfailed to delete the folder", RED);
+        printf("%s\n", WHITE);
+    }
+}
+
 //create directory
-void createDirectory()
+void createDirectory(void)
 {
     char *dirName = malloc(FILE_NAME * sizeof(char));
     printf("$:dirname ");
@@ -50,12 +75,14 @@ void createDirectory()
         printf("%s\n", WHITE);
     }
     else
+    {
         printf("%serror occurred while creating the folder", RED);
         printf("%s\n", WHITE);
+    }
 }
 
 //delete file
-void deleteFile()
+void deleteFile(void)
 {
     char *fileName = malloc(FILE_NAME * sizeof(char));
     printf("$:filename ");
@@ -75,12 +102,12 @@ void deleteFile()
     else
     {
         printf("%sfile does not exist or cannot be deleted", RED);
-        printf("%s\n" WHITE);
+        printf("%s\n", WHITE);
     }
 }
 
 //write to file
-void writeToFile()
+void writeToFile(void)
 {
     char *fileName = malloc(FILE_NAME * sizeof(char));
     char *lineContent = malloc(LINE_SIZE * sizeof(char));
@@ -114,7 +141,7 @@ void writeToFile()
 }
 
 //read file content
-void readFile()
+void readFile(void)
 {
     char *fileName = malloc(FILE_NAME * sizeof(char));
     printf("$:filename ");
@@ -150,7 +177,7 @@ void readFile()
 }
 
 //creating file
-void createFile()
+void createFile(void)
 {
     char fileName[FILE_NAME];
     printf("$:filename: ");
@@ -186,7 +213,7 @@ void createFile()
 }
 
 //change working directory
-void changeDirectory()
+void changeDirectory(void)
 {
     char dirName[COMMAND_SIZE];
     printf("$:dirname: ");
@@ -202,7 +229,7 @@ void changeDirectory()
 }
 
 //list content of current directory
-void listFiles()
+void listFiles(void)
 {
     struct dirent *direntPointer;
     DIR *dir = opendir(".");
@@ -232,33 +259,35 @@ void listFiles()
 }
 
 //check current direcotry path
-void currentDirectory()
+void currentDirectory(void)
 {
     char directory[PATH_SIZE];
     printf("$: %s\n", getcwd(directory, PATH_SIZE));
 }
 
 //clear the whole console
-void clearScreen()
+void clearScreen(void)
 {
     system("clear");
 }
 
 //show describe of every command
-void help()
+void help(void)
 {
-    printf("---------- HELP ----------\n");
-    printf("exit-terminal >> close terminal\n");
-    printf("help >> show commands description\n");
-    printf("clear >> clear terminal\n");
-    printf("list-files >> list current directory content\n");
-    printf("current-dir >> show current path\n");
-    printf("change-dir >> change working directory\n");
-    printf("crt-file >> create file\n");
-    printf("read-file >> read file\n");
-    printf("wrt-file >> overwrite file\n");
-    printf("dlt-file >> delete file\n");
-    printf("crt-dir >> create directory\n");
+    printf("\n");
+    printf("exit-terminal           close terminal\n");
+    printf("help                    show commands description\n");
+    printf("clear                   clear terminal\n");
+    printf("list-files              list current directory content\n");
+    printf("current-dir             show current path\n");
+    printf("change-dir              change working directory\n");
+    printf("crt-file                create file\n");
+    printf("read-file               read file\n");
+    printf("wrt-file                overwrite file\n");
+    printf("dlt-file                delete file\n");
+    printf("crt-dir                 create directory\n");
+    printf("dlt-dir                 delete directory\n");
+    printf("\n");
 }
 
 //check what command user used
@@ -272,7 +301,7 @@ int checkCommand(char *command)
             command[i] = command[i];
     }
     int commandIndex = 0;
-    const char *commandArray[] = {"exit-terminal", "help", "clear", "list-files", "current-dir", "change-dir", "crt-file", "read-file", "wrt-file", "dlt-file", "crt-dir"}; 
+    const char *commandArray[] = {"exit-terminal", "help", "clear", "list-files", "current-dir", "change-dir", "crt-file", "read-file", "wrt-file", "dlt-file", "crt-dir", "dlt-dir"}; 
     for(int i = 0; i < (int)(sizeof(commandArray)/sizeof(commandArray[0])); i++)
     {
         if(strcmp(commandArray[i], command) == 0)
@@ -281,7 +310,7 @@ int checkCommand(char *command)
     return commandIndex;
 }
 
-void mainLoop()
+void mainLoop(void)
 {
     char command[COMMAND_SIZE];
     while (strcmp("exit-terminal", command) != 0)
@@ -323,6 +352,9 @@ void mainLoop()
             break;
         case 10:
             createDirectory();
+            break;
+        case 11:
+            removeDirectory();
             break;
         default:
             break;
