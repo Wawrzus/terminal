@@ -18,6 +18,12 @@
 //
 #define DIR_NAME 200
 
+//colors
+#define RED "\033[0;31m"
+#define GREEN "\033[0;32m"
+#define BLUE "\033[0;34m"
+#define WHITE "\033[0;37m"
+
 //create directory
 void createDirectory()
 {
@@ -39,9 +45,13 @@ void createDirectory()
             dirName[i] = dirName[i];
     }
     if(mkdir(dirName, 0777) != -1)
-        printf("stworzono nowy folder\n");
+    {
+        printf("%snew folder has been created", GREEN);
+        printf("%s\n", WHITE);
+    }
     else
-        printf("wystapil blad przy tworzeniu\n");
+        printf("%serror occurred while creating the folder", RED);
+        printf("%s\n", WHITE);
 }
 
 //delete file
@@ -59,11 +69,13 @@ void deleteFile()
     }
     if(remove(fileName) == 0)
     {
-        printf("plik zostal usuniety\n");
+        printf("%sfile has been deleted", GREEN);
+        printf("%s\n", WHITE);
     }
     else
     {
-        printf("plik nie istnieje lub nie da sie go usunac\n");
+        printf("%sfile does not exist or cannot be deleted", RED);
+        printf("%s\n" WHITE);
     }
 }
 
@@ -91,11 +103,13 @@ void writeToFile()
         fgets(lineContent, LINE_SIZE, file);
         fprintf(file, "%s", lineContent);
         fclose(file);
-        printf("zapisano\n");
+        printf("%ssave changes in file", GREEN);
+        printf("%s\n", WHITE);
     }
     else
     {
-        printf("takie plik nie istnieje\n");
+        printf("%sfile does not exist", RED);
+        printf("%s\n", WHITE);
     }
 }
 
@@ -130,7 +144,8 @@ void readFile()
     }
     else
     {
-        printf("taki plik nie istnieje\n");
+        printf("%sfile does not exist", RED);
+        printf("%s\n", WHITE);
     } 
 }
 
@@ -147,18 +162,26 @@ void createFile()
         else
             fileName[i] = fileName[i];
     }
-
+    for (int i = 0; i < (int)strlen(fileName); i++)
+    {
+        if(fileName[i] == ' ')
+            fileName[i] = '_'; 
+        else
+            fileName[i] = fileName[i];
+    }
     FILE *file = fopen(fileName, "r");
     if(file != NULL)
     {
         fclose(file);
-        printf("taki plik juz istnieje\n");
+        printf("%sfile already exists", RED);
+        printf("%s\n", WHITE);
     }
     else
     {
         file = fopen(fileName, "w");
         fclose(file);
-        printf("plik utworzony pomyslnie\n");
+        printf("%sfile has been created", GREEN);
+        printf("%s\n", WHITE);
     }  
 }
 
@@ -185,7 +208,26 @@ void listFiles()
     DIR *dir = opendir(".");
     while((direntPointer = readdir(dir)) != NULL)
         if(direntPointer->d_name[0] != '.')
-            printf("%s\n", direntPointer->d_name);
+        {
+            if(direntPointer->d_type == 8)
+            {
+                printf("%s  ", direntPointer->d_name);
+                printf("%s%s", GREEN, "file");
+                printf("%s\n", WHITE);
+            }
+            else if(direntPointer->d_type == 4)
+            {
+                printf("%s  ", direntPointer->d_name);
+                printf("%s%s", BLUE, "directory");
+                printf("%s\n", WHITE);
+            }
+            else
+            {
+                printf("%s  ", direntPointer->d_name);
+                printf("%s%s", RED, "unknown");
+                printf("%s\n", WHITE);
+            }
+        }
     closedir(dir);
 }
 
